@@ -38,9 +38,18 @@ namespace HeaderWriter
             //Control the arguments
             if (args.Length != 3)
             {
+                var origColor = Console.ForegroundColor;
+
+                Console.ForegroundColor = ConsoleColor.Green;
+
+                Console.WriteLine();
                 Console.WriteLine("Use: HeaderWriter.exe <path to file with header text> <path to folder that contains the files where the header should be written> <filter>");
+                Console.WriteLine();
+
                 Console.WriteLine("Example: HeaderWriter.exe c:/headertext.txt c:/destfolder *.cs");
-                Console.ReadLine();
+
+                Console.ForegroundColor = origColor;
+
                 return;
             }
 
@@ -98,8 +107,15 @@ namespace HeaderWriter
                 tempFile.Dispose();
                 tempFile.Close();
 
-                File.Replace(S + "~", S, S + ".bk");
-                File.Move(S + ".bk", args[1] + "/Backup/" + System.IO.Path.GetFileName(S));
+                try
+                {
+                    File.Replace(S + "~", S, S + ".bk");
+                    File.Move(S + ".bk", args[1] + "/Backup/" + System.IO.Path.GetFileName(S));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception catched: " + e.Message);
+                }
             }
 
             Console.WriteLine("Process completed");
